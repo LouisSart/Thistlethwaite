@@ -113,14 +113,14 @@ CubieCube cc_from_eo(const unsigned &eo) {
   CubieCube ret;
   eo_from_index<NE, true>(eo, ret.eo);
   unsigned mod2 = std::accumulate(ret.eo.begin(), ret.eo.end(), 0) % 2;
-  ret.co.back() = (2 - mod2) % 2;
+  ret.eo.back() = (2 - mod2) % 2;
   return ret;
 }
 
-constexpr unsigned SLICE_COORD_SIZE = 495;
+constexpr unsigned SLICE_COORD_SIZE = binomial(12, 4) * factorial(4);
 constexpr unsigned CP_COORD_SIZE = factorial(8);
-constexpr unsigned CO_COORD_SIZE = ipow(3, 7);
-constexpr unsigned EO_COORD_SIZE = ipow(2, 12);
+constexpr unsigned CO_COORD_SIZE = ipow(3, NC - 1);
+constexpr unsigned EO_COORD_SIZE = ipow(2, NE - 1);
 MoveTable<CP_COORD_SIZE> cp_mtable;
 MoveTable<CO_COORD_SIZE> co_mtable;
 MoveTable<EO_COORD_SIZE> eo_mtable;
@@ -128,11 +128,38 @@ MoveTable<SLICE_COORD_SIZE> e_mtable;
 MoveTable<SLICE_COORD_SIZE> m_mtable;
 MoveTable<SLICE_COORD_SIZE> s_mtable;
 
-// void make_apply() {
-//   // if (!cp_mtable.load("cp")) {
-//   //   cp_mtable.compute(cp_coordinate, cc_from_cp_coord);
-//   // }
-//   if (!e_mtable.load("esl")) {
-//     e_mtable.compute(slice_coordinate, cc_from_esl_coord);
-//   }
-// }
+auto make_apply() {
+  if (!cp_mtable.load("cp")) {
+    cp_mtable.compute(cp_coord, cc_from_cp);
+    cp_mtable.write("cp");
+  }
+  if (!co_mtable.load("co")) {
+    co_mtable.compute(co_coord, cc_from_co);
+    co_mtable.write("co");
+  }
+  if (!eo_mtable.load("eo")) {
+    eo_mtable.compute(eo_coord, cc_from_eo);
+    eo_mtable.write("eo");
+  }
+  if (!e_mtable.load("eslice")) {
+    e_mtable.compute(E_coord, cc_from_E);
+    e_mtable.write("eslice");
+  }
+  if (!m_mtable.load("mslice")) {
+    m_mtable.compute(M_coord, cc_from_M);
+    m_mtable.write("mslice");
+  }
+  if (!s_mtable.load("sslice")) {
+    s_mtable.compute(S_coord, cc_from_S);
+    s_mtable.write("sslice");
+  }
+
+  return [](Cube &cube, const Move &m) {
+    cp_mtable.apply(cube.cp, m);
+    co_mtable.apply(cube.co, m);
+    eo_mtable.apply(cube.eo, m);
+    e_mtable.apply(cube.esl, m);
+    m_mtable.apply(cube.msl, m);
+    s_mtable.apply(cube.ssl, m);
+  };
+}
