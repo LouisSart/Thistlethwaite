@@ -69,6 +69,8 @@ struct Cube {
   void show() const { print(cp, co, eo, esl, msl, ssl); }
 };
 
+const auto solved = Cube();
+
 bool operator==(const Cube &c1, const Cube &c2) {
   return c1.cp == c2.cp && c1.co == c2.co && c1.eo == c2.eo &&
          c1.esl == c2.esl && c1.msl == c2.msl && c1.ssl == c2.ssl;
@@ -172,13 +174,13 @@ void apply(const Move &m, Cube &cube) {
   s_mtable.apply(cube.ssl, m);
 }
 
-// void apply(Cube &cube, const Algorithm &alg) {
-//   for (const Move m : alg.sequence) {
-//     apply(cube, m);
-//   }
-// }
-
-bool is_solved(const Cube &cube) {
-  static auto solved = Cube();
-  return cube == solved;
+void apply_alg(const Algorithm &alg, Cube &cube) {
+  for (const Move m : alg.sequence) {
+    apply(m, cube);
+  }
 }
+
+// bool is_solved(const Cube &cube) {
+//   static auto solved = Cube();
+//   return cube == solved;
+// }
