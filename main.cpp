@@ -1,13 +1,16 @@
 #include "cube.hpp"
+#include "extern/EpiCube/src/search.hpp"
+#include "phase_one.hpp"
 
 int main(int argc, char *argv[]) {
-  CubieCube cc;
-  cc.apply("R U D2 F' B D L2 F'");
+  load_mtables();
+  phase_one::load_ptable();
 
-  unsigned c = eo_coord(cc);
-  CubieCube check = cc_from_eo(c);
-
-  cc.show();
-  check.show();
+  Cube cube(
+      "R' U' F D2 L' B' R2 D L' B R L2 B2 D R2 B2 U D B2 U F2 L2 D2 R' U' F");
+  auto root = make_root(cube);
+  auto solutions =
+      IDAstar(root, apply, phase_one::estimate, phase_one::is_solved);
+  solutions.show();
   return 0;
 }

@@ -1,4 +1,5 @@
 #pragma once
+#include "extern/EpiCube/src/algorithm.hpp"
 #include "extern/EpiCube/src/coordinate.hpp"
 #include "extern/EpiCube/src/cubie_cube.hpp"
 #include "extern/EpiCube/src/move_table.hpp"
@@ -54,17 +55,24 @@ struct Cube {
   // ssl: S-slice position coordinate
   unsigned cp, co, eo, esl, msl, ssl;
 
-  Cube() {
-    CubieCube solved;
-    cp = cp_coord(solved);
-    co = co_coord(solved);
-    eo = eo_coord(solved);
-    esl = E_coord(solved);
-    msl = M_coord(solved);
-    ssl = S_coord(solved);
+  Cube(const CubieCube &cc) {
+    cp = cp_coord(cc);
+    co = co_coord(cc);
+    eo = eo_coord(cc);
+    esl = E_coord(cc);
+    msl = M_coord(cc);
+    ssl = S_coord(cc);
   }
+  Cube() : Cube(CubieCube()) {}
+  Cube(const Algorithm &alg) : Cube(CubieCube(alg)) {}
+
   void show() const { print(cp, co, eo, esl, msl, ssl); }
 };
+
+bool operator==(const Cube &c1, const Cube &c2) {
+  return c1.cp == c2.cp && c1.co == c2.co && c1.eo == c2.eo &&
+         c1.esl == c2.esl && c1.msl == c2.msl && c1.ssl == c2.ssl;
+}
 
 CubieCube cc_from_slice_coord(const unsigned &esl,
                               const std::array<unsigned, 4> slice) {
@@ -128,7 +136,7 @@ MoveTable<SLICE_COORD_SIZE> e_mtable;
 MoveTable<SLICE_COORD_SIZE> m_mtable;
 MoveTable<SLICE_COORD_SIZE> s_mtable;
 
-auto make_apply() {
+void load_mtables() {
   if (!cp_mtable.load("cp")) {
     cp_mtable.compute(cp_coord, cc_from_cp);
     cp_mtable.write("cp");
@@ -153,13 +161,24 @@ auto make_apply() {
     s_mtable.compute(S_coord, cc_from_S);
     s_mtable.write("sslice");
   }
+}
 
-  return [](Cube &cube, const Move &m) {
-    cp_mtable.apply(cube.cp, m);
-    co_mtable.apply(cube.co, m);
-    eo_mtable.apply(cube.eo, m);
-    e_mtable.apply(cube.esl, m);
-    m_mtable.apply(cube.msl, m);
-    s_mtable.apply(cube.ssl, m);
-  };
+void apply(const Move &m, Cube &cube) {
+  cp_mtable.apply(cube.cp, m);
+  co_mtable.apply(cube.co, m);
+  eo_mtable.apply(cube.eo, m);
+  e_mtable.apply(cube.esl, m);
+  m_mtable.apply(cube.msl, m);
+  s_mtable.apply(cube.ssl, m);
+}
+
+// void apply(Cube &cube, const Algorithm &alg) {
+//   for (const Move m : alg.sequence) {
+//     apply(cube, m);
+//   }
+// }
+
+bool is_solved(const Cube &cube) {
+  static auto solved = Cube();
+  return cube == solved;
 }
