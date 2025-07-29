@@ -14,8 +14,8 @@ int main(int argc, char *argv[]) {
             cube);
 
   auto root = make_root(cube);
-  auto solutions =
-      IDAstar(root, apply, phase_two::estimate, phase_two::is_solved);
+  auto solutions = IDAstar(root, apply, phase_two::estimate,
+                           phase_two::is_solved, phase_two::directions);
   solutions.show();
   return 0;
 }
