@@ -179,8 +179,3 @@ void apply_alg(const Algorithm &alg, Cube &cube) {
     apply(m, cube);
   }
 }
-
-// bool is_solved(const Cube &cube) {
-//   static auto solved = Cube();
-//   return cube == solved;
-// }

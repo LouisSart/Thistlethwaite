@@ -75,4 +75,34 @@ void load_ptable() {
   }
 }
 
+unsigned estimate(const Cube &cube) { return ptable[index(cube)]; };
+
+bool is_solved(const Cube &cube) {
+  static auto solved = Cube();
+  return cube == solved;
+}
+
+std::vector<Move> directions(const Node<Cube>::sptr node) {
+  if (node->parent == nullptr) {
+    return {U2, D2, R2, L2, F2, B2};
+  } else {
+    switch (node->last_move) {
+    case U2:
+      return {D2, R2, L2, F2, B2};
+    case D2:
+      return {R2, L2, F2, B2};
+    case R2:
+      return {U2, D2, L2, F2, B2};
+    case L2:
+      return {U2, D2, F2, B2};
+    case F2:
+      return {U2, D2, R2, L2, B2};
+    case B2:
+      return {U2, D2, R2, L2};
+    default:
+      return {U2, D2, R2, L2, F2, B2};
+    }
+  }
+}
+
 } // namespace phase_four

@@ -14,12 +14,12 @@ int main(int argc, char *argv[]) {
   phase_four::generate_representants();
   phase_four::load_ptable();
 
-  // Cube cube;
-  // apply_alg("D F2 D L2 D' F2 U2 F2 U L2 B2", cube);
+  Cube cube;
+  apply_alg("L2 R2 U2 F2 U2 B2 R2 L2 D2 F2 U2 R2 B2 L2 R2", cube);
 
-  // auto root = make_root(cube);
-  // auto solutions = IDAstar(root, apply, phase_three::estimate,
-  //                          phase_three::is_solved, phase_three::directions);
-  // solutions.show();
+  auto root = make_root(cube);
+  auto solutions = IDAstar(root, apply, phase_four::estimate,
+                           phase_four::is_solved, phase_four::directions);
+  solutions.show();
   return 0;
 }
