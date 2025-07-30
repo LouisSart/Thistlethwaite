@@ -5,24 +5,21 @@
 #include "phase_two.hpp"
 #include <deque>
 #include <map>
-#include <set>
 
 namespace phase_three {
 std::array<Move, 10> moves{U, U2, U3, D, D2, D3, R2, L2, F2, B2};
 
 constexpr unsigned N_HTR_CP = factorial(4) * factorial(4) / 6; // = 96
-std::vector<CubieCube> htr_corner_states;
+std::map<unsigned, CubieCube> htr_corner_states;
 
 void generate_htr_corner_states() {
-  std::set<unsigned> htr_cp_indices;
   std::deque queue{CubieCube()};
 
   while (queue.size() > 0) {
     CubieCube cc = queue.back();
     unsigned index = cp_coord(cc);
-    if (!htr_cp_indices.contains(index)) {
-      htr_cp_indices.insert(index);
-      htr_corner_states.push_back(cc);
+    if (!htr_corner_states.contains(index)) {
+      htr_corner_states[index] = cc;
       for (const Move m : {U2, D2, R2, L2, F2, B2}) {
         CubieCube child = cc;
         child.apply(m);
@@ -31,11 +28,10 @@ void generate_htr_corner_states() {
     }
     queue.pop_back();
   }
-  assert(htr_cp_indices.size() == N_HTR_CP);
   assert(htr_corner_states.size() == N_HTR_CP);
 }
 
-constexpr unsigned N_CORNER_REP = CP_COORD_SIZE / N_HTR_CP; // 40320/96 = 420
+constexpr unsigned N_CORNER_REP = CP_COORD_SIZE / N_HTR_CP; // 40320 / 96 = 420
 std::array<unsigned, CP_COORD_SIZE> corner_representants;
 void generate_corner_representants() {
   corner_representants.fill(CP_COORD_SIZE);
@@ -46,7 +42,7 @@ void generate_corner_representants() {
     CubieCube cc = queue.back();
     assert(cp_coord(cc) < CP_COORD_SIZE);
     if (corner_representants[cp_coord(cc)] == CP_COORD_SIZE) {
-      for (CubieCube htr_cc : htr_corner_states) {
+      for (const auto &[_, htr_cc] : htr_corner_states) {
         CubieCube rep = htr_cc;
         rep.apply(cc);
         corner_representants[cp_coord(rep)] = index;
