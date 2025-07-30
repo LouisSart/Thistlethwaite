@@ -38,7 +38,7 @@ auto thistlethwaite(Node<Cube>::sptr root) {
   solutions_p4.reserve(breadth);
 
   while (solutions_p4.size() == 0) {
-    print("Thistlethwaite : searching at depth", max_depth);
+    // print("Thistlethwaite : searching at depth", max_depth);
     solutions_p1 = solve_phase_one(root, max_depth);
     solutions_p1.sort_by_depth();
 
