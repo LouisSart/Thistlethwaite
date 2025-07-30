@@ -2,7 +2,7 @@ C++ Implementation of [Thistlethwaite's algorithm](https://www.jaapsch.net/puzzl
 
 Clone with `git clone --recursive https://github.com/LouisSart/Thistlethwaite.git` as submodule "EpiCube" is required for this to run.
 
-I use `g++ -std=c++20 -O3 main.cpp -o thistlewaite` to compile
+I use `g++ -std=c++20 -O3 main.cpp -o thistlethwaite` to compile
 and then run with for example:
 
 ```
