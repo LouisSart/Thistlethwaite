@@ -1,5 +1,6 @@
 #pragma once
 #include "cube.hpp"
+#include "extern/EpiCube/src/node.hpp"
 #include "extern/EpiCube/src/pruning_table.hpp"
 #include "phase_two.hpp"
 #include <deque>
@@ -115,6 +116,33 @@ void load_ptable() {
   if (!ptable.load("phase_three")) {
     ptable.generate<true>(Cube(), apply, index, moves);
     ptable.write("phase_three");
+  }
+}
+
+unsigned estimate(const Cube &cube) { return ptable[index(cube)]; };
+
+bool is_solved(const Cube &cube) { return index(cube) == 0; }
+
+std::vector<Move> directions(const Node<Cube>::sptr node) {
+  if (node->parent == nullptr) {
+    return {U, U2, U3, D, D2, D3, R2, L2, F2, B2};
+  } else {
+    switch (node->last_move) {
+    case U ... U3:
+      return {D, D2, D3, R2, L2, F2, B2};
+    case D ... D3:
+      return {R2, L2, F2, B2};
+    case R2:
+      return {U, U2, U3, D, D2, D3, L2, F2, B2};
+    case L2:
+      return {U, U2, U3, D, D2, D3, F2, B2};
+    case F2:
+      return {U, U2, U3, D, D2, D3, R2, L2, B2};
+    case B2:
+      return {U, U2, U3, D, D2, D3, R2, L2};
+    default:
+      return {U, U2, U3, D, D2, D3, R2, L2, F2, B2};
+    }
   }
 }
 } // namespace phase_three
