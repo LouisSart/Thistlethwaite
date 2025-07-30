@@ -11,8 +11,8 @@ int main(int argc, char *argv[]) {
   phase_four::generate_representants();
   phase_four::load_ptable();
 
-  Cube cube(
-      "R' U' F L' R' U2 F2 R' U2 F2 L' U L B' F' R' D F' U2 F L' D2 R' U' F");
+  auto scramble = Algorithm(argv[argc - 1]);
+  Cube cube(scramble);
 
   auto root = make_root(cube);
   auto solutions = thistlethwaite(root);
