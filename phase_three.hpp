@@ -99,7 +99,9 @@ unsigned corner_index(const Cube &cube) {
 }
 
 unsigned edge_index(const Cube &cube) {
-  return edge_representants[comb_mslice_index(cube)];
+  unsigned rep_index = comb_mslice_index(cube);
+  assert(edge_representants.contains(rep_index));
+  return edge_representants[rep_index];
 }
 
 unsigned index(const Cube &cube) {
@@ -117,7 +119,10 @@ void load_ptable() {
 
 unsigned estimate(const Cube &cube) { return ptable[index(cube)]; };
 
-bool is_solved(const Cube &cube) { return index(cube) == 0; }
+bool is_solved(const Cube &cube) {
+  assert(phase_two::is_solved(cube));
+  return index(cube) == 0;
+}
 
 std::vector<Move> directions(const Node<Cube>::sptr node) {
   if (node->parent == nullptr) {
