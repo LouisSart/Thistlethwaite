@@ -66,8 +66,6 @@ void generate_corner_representants() {
   }
 }
 
-// constexpr unsigned COMB_SLICE_COORD_SIZE =
-//     SLICE_COORD_SIZE / factorial(4);            // 495
 constexpr unsigned N_EDGE_REP = binomial(8, 4); // 70
 std::map<unsigned, unsigned> edge_representants;
 unsigned comb_mslice_index(const Cube &cube) { return cube.msl / factorial(4); }
@@ -97,5 +95,26 @@ void generate_representants() {
   generate_htr_corner_states();
   generate_corner_representants();
   generate_edge_representants();
+}
+
+unsigned corner_index(const Cube &cube) {
+  return corner_representants[cube.cp];
+}
+
+unsigned edge_index(const Cube &cube) {
+  return edge_representants[comb_mslice_index(cube)];
+}
+
+unsigned index(const Cube &cube) {
+  return corner_index(cube) * N_EDGE_REP + edge_index(cube);
+}
+
+constexpr unsigned PTABLE_SIZE = N_CORNER_REP * N_EDGE_REP; // 96 * 70 = 6720
+PruningTable<PTABLE_SIZE> ptable;
+void load_ptable() {
+  if (!ptable.load("phase_three")) {
+    ptable.generate<true>(Cube(), apply, index, moves);
+    ptable.write("phase_three");
+  }
 }
 } // namespace phase_three

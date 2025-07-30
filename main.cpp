@@ -9,6 +9,7 @@ int main(int argc, char *argv[]) {
   phase_one::load_ptable();
   phase_two::load_ptable();
   phase_three::generate_representants();
+  phase_three::load_ptable();
 
   // Cube cube;
   // apply_alg("R' U' F D2 B' L' D R' F' B U' D2 R F2 L' B2 L2 B2 L' F2 L' D2 R'
