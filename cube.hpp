@@ -166,12 +166,12 @@ void load_mtables() {
 }
 
 void apply(const Move &m, Cube &cube) {
-  cp_mtable.apply(cube.cp, m);
-  co_mtable.apply(cube.co, m);
-  eo_mtable.apply(cube.eo, m);
-  e_mtable.apply(cube.esl, m);
-  m_mtable.apply(cube.msl, m);
-  s_mtable.apply(cube.ssl, m);
+  cp_mtable.apply(m, cube.cp);
+  co_mtable.apply(m, cube.co);
+  eo_mtable.apply(m, cube.eo);
+  e_mtable.apply(m, cube.esl);
+  m_mtable.apply(m, cube.msl);
+  s_mtable.apply(m, cube.ssl);
 }
 
 void apply_alg(const Algorithm &alg, Cube &cube) {

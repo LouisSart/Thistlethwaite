@@ -70,7 +70,7 @@ constexpr unsigned PTABLE_SIZE = N_HTR_EP * phase_three::N_HTR_CP;
 PruningTable<PTABLE_SIZE> ptable;
 void load_ptable() {
   if (!ptable.load("phase_four")) {
-    ptable.generate<true>(Cube(), apply, index, moves);
+    ptable.generate_BFS<true>(Cube(), apply, index, moves);
     ptable.write("phase_four");
   }
 }

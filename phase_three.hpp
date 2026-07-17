@@ -112,7 +112,7 @@ constexpr unsigned PTABLE_SIZE = N_CORNER_REP * N_EDGE_REP; // 96 * 70 = 6720
 PruningTable<PTABLE_SIZE> ptable;
 void load_ptable() {
   if (!ptable.load("phase_three")) {
-    ptable.generate<true>(Cube(), apply, index, moves);
+    ptable.generate_BFS<true>(Cube(), apply, index, moves);
     ptable.write("phase_three");
   }
 }

@@ -21,13 +21,20 @@ unsigned index(const Cube &cube) {
   return cube.co * COMB_SLICE_COORD_SIZE + comb_slice_index(cube);
 }
 
+Cube from_index(const unsigned &index) {
+  Cube ret;
+  ret.co = index / COMB_SLICE_COORD_SIZE;
+  ret.esl = index % COMB_SLICE_COORD_SIZE * factorial(4);
+  return ret;
+}
+
 constexpr unsigned PTABLE_SIZE = CO_COORD_SIZE * COMB_SLICE_COORD_SIZE;
 PruningTable<PTABLE_SIZE> ptable;
 std::array<Move, 14> moves = {U,  U2, U3, D,  D2, D3, R,
                               R2, R3, L,  L2, L3, F2, B2};
 void load_ptable() {
   if (!ptable.load("phase_two")) {
-    ptable.generate<true>(Cube(), apply, phase_two::index, moves);
+    ptable.generate<true>(Cube(), apply, phase_two::index, phase_two::from_index, 3, 7, moves);
     ptable.write("phase_two");
   }
 }
